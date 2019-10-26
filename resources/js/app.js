@@ -7,6 +7,23 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+import VueRouter from 'vue-router'
+import { Form, HasError, AlertError } from 'vform'
+import moment from 'moment'
+
+window.Form = Form;
+Vue.component(HasError.name, HasError);
+Vue.component(AlertError.name, AlertError);
+
+Vue.use(VueRouter);
+    
+Vue.filter('capText', function (text) {
+    return text.charAt(0).toUpperCase() + text.slice(1)
+});
+Vue.filter('dateFrmt', function (date) {
+    moment.locale('en-gb')
+    return moment(date).format('ll');
+});
 
 /**
  * The following block of code may be used to automatically register your
@@ -19,7 +36,32 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+import Dashboard from './components/Dashboard';
+import Profile from './components/Profile';
+import User from './components/User/';
+
+const routes = [
+    {
+        path: '/dashboard',
+        name: 'Dashboard',
+        component: Dashboard
+    },
+    {
+        path: '/user',
+        name: 'User',
+        component: User
+    },
+    {
+        path: '/profile',
+        name: 'Profile',
+        component: Profile
+    }
+];
+
+const router = new VueRouter({
+    mode: 'history',
+    routes // short for `routes: routes`
+})
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -29,4 +71,5 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 const app = new Vue({
     el: '#app',
+    router
 });
